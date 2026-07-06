@@ -20,7 +20,10 @@ enum Page: String {
 
 
 struct RootView: View {
+    
+    
     @State private var page: Page = .chat
+    
     
     var body: some View {
         TabView(selection: $page) {
@@ -33,9 +36,11 @@ struct RootView: View {
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
         .safeAreaInset(edge: .top) {
-            Text(page.rawValue)
+            RootViewTitleView(page: $page)
         }
     }
+    
+    
 }
 
 
