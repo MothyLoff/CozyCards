@@ -6,6 +6,8 @@ struct ChatView: View {
     @State private var chatViewModel = ChatViewModel()
     @State private var prompt: String = ""
     
+    @Namespace private var namespace
+    
     var body: some View {
         VStack {
             ScrollView {
@@ -15,25 +17,36 @@ struct ChatView: View {
                     }
                 }
             }
+            .defaultScrollAnchor(.bottom)
+            .scrollIndicators(.hidden)
             .safeAreaInset(edge: .bottom) {
-                HStack {
-                    TextField("Ask about words..", text: $prompt)
-                        .padding()
-                        .glassEffect()
-                    Button {
-                        Task {
-                            let tmpPrompt = prompt
-                            prompt = ""
-                            
-                            await chatViewModel.newMessage(prompt: tmpPrompt)
-                        }
-                    } label: {
-                        Image(systemName: "arrow.turn.right.up")
+                GlassEffectContainer {
+                    HStack {
+                        TextField("Ask about words..", text: $prompt, axis: .vertical)
+                            .lineLimit(1...5)
                             .padding()
-                            .glassEffect()
+                            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 32))
+                            .glassEffectID("input", in: namespace)
+                        
+                        if !prompt.isEmpty {
+                            Button {
+                                Task {
+                                    let tmpPrompt = prompt
+                                    prompt = ""
+                                    
+                                    if tmpPrompt != "" {
+                                        await chatViewModel.newMessage(prompt: tmpPrompt)
+                                    }
+                                }
+                            } label: {
+                                Image(systemName: "arrow.turn.right.up")
+                                    .padding()
+                                    .glassEffect(.regular.interactive())
+                                    .glassEffectID("send", in: namespace)
+                            }
+                        }
                     }
                 }
-                
             }
         }
         .padding(.horizontal, 32)

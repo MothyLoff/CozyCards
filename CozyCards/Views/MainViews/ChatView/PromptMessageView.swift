@@ -15,7 +15,7 @@ struct PromptMessageView : View {
                         .foregroundStyle(.background.secondary)
                 }
         }
-        
+        .transition(.move(edge: .bottom).combined(with: .opacity))
     }
     
     

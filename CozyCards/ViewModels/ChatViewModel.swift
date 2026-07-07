@@ -1,4 +1,4 @@
-import Foundation
+import SwiftUI
 import Observation
 import FoundationModels
 
@@ -29,7 +29,9 @@ final class ChatViewModel {
 
     public func newMessage(prompt: String) async {
         let message = LanguageModelMessage(prompt: prompt)
-        messages.append(message)
+        withAnimation(.spring(duration: 0.2)) {
+            messages.append(message)
+        }
 
         do {
             for try await partialResponse in languageModelService.getResponseWithStream(prompt: prompt) {
