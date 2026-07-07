@@ -1,8 +1,10 @@
+import Foundation
 import Observation
 import FoundationModels
 
 
 class LanguageModelMessage {
+    public var id: UUID = UUID()
     public var prompt: String
     public var responseStream : LanguageModelSession.ResponseStream<String>
     public var response: String = ""
@@ -37,8 +39,8 @@ final class ChatViewModel {
     
     private let languageModelService = LanguageModelService()
     
-    public func newMessage(prompt: String) {
-        var responseStream = languageModelService.getResponseWithStream(prompt: prompt)
-        messages.append(LanguageModelMessage(prompt: prompt, responseStream: responseStream))
+    public func newMessage(prompt: String) async {
+        let responseStream = languageModelService.getResponseWithStream(prompt: prompt)
+        messages.append(await LanguageModelMessage(prompt: prompt, responseStream: responseStream))
     }
 }

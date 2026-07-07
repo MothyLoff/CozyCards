@@ -3,19 +3,37 @@ import SwiftUI
 
 
 struct ChatView: View {
-    @State var prompt: String = ""
+    @State private var chatViewModel = ChatViewModel()
+    @State private var prompt: String = ""
     
     var body: some View {
         VStack {
             ScrollView {
                 VStack {
-                    ChatUnitView(promptText: "Hi clanker", responseText: "hi hi bro")
+                    ForEach(chatViewModel.messages, id:\.self.id) { message in
+                        ChatUnitView(promptText: message.prompt, responseText: message.response)
+                    }
                 }
             }
             .safeAreaInset(edge: .bottom) {
-                TextField("Ask about words..", text: $prompt)
-                    .padding()
-                    .glassEffect()
+                HStack {
+                    TextField("Ask about words..", text: $prompt)
+                        .padding()
+                        .glassEffect()
+                    Button {
+                        Task {
+                            let tmpPrompt = prompt
+                            prompt = ""
+                            
+                            await chatViewModel.newMessage(prompt: tmpPrompt)
+                        }
+                    } label: {
+                        Image(systemName: "arrow.turn.right.up")
+                            .padding()
+                            .glassEffect()
+                    }
+                }
+                
             }
         }
         .padding(.horizontal, 32)
