@@ -7,16 +7,16 @@ struct ChatView: View {
     
     var body: some View {
         VStack {
-            Spacer()
             ScrollView {
                 VStack {
-                    PromptMessageView(prompt: "Hey bro")
-                    ResponseMessageView(response: "Hi Hi")
+                    ChatUnitView(promptText: "Hi clanker", responseText: "hi hi bro")
                 }
             }
-            TextField("Ask about words..", text: $prompt)
-                .padding()
-                .glassEffect()
+            .safeAreaInset(edge: .bottom) {
+                TextField("Ask about words..", text: $prompt)
+                    .padding()
+                    .glassEffect()
+            }
         }
         .padding(.horizontal, 32)
 
@@ -31,3 +31,4 @@ struct ChatView: View {
         .preferredColorScheme(.dark)
     
 }
+
