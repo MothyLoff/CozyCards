@@ -10,11 +10,7 @@ import SwiftUI
 
 
 enum Page: String {
-    
-    
     case chat, chats, library
-    
-    
 }
 
 

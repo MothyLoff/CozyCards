@@ -14,19 +14,13 @@ struct LibraryCategoryView: View {
             ScrollView (.horizontal) {
                 HStack {
                     ForEach(words, id:\.self) { word in
-                        Text(word)
-                            .font(.headline)
-                            .padding()
-                            .background {
-                                RoundedRectangle(cornerRadius: 32)
-                                    .foregroundStyle(.background.secondary)
-                            }
+                        LibraryWordView(word: word)
                     }
                 }
             }
             .scrollIndicators(.hidden)
         }
-        .padding(.bottom, 32)
+        .padding(.bottom, 24)
         
     }
     
