@@ -12,7 +12,7 @@ import SwiftUI
 enum Page: String {
     
     
-    case chat, swiper, library
+    case chat, chats, library
     
     
 }
@@ -27,10 +27,10 @@ struct RootView: View {
     
     var body: some View {
         TabView(selection: $page) {
+            ChatsView()
+                .tag(Page.chats)
             ChatView()
                 .tag(Page.chat)
-            SwiperView()
-                .tag(Page.swiper)
             LibraryView()
                 .tag(Page.library)
         }
