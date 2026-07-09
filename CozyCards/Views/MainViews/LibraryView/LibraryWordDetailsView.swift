@@ -17,9 +17,10 @@ struct LibraryWordDetailsView: View {
                     } label: {
                         Image(systemName: "arrow.backward")
                             .padding()
-                            .glassEffect(.regular.interactive())
                         
                     }
+                    .buttonStyle(.plain)
+                    .glassEffect(.regular.interactive())
                     
                     Spacer()
                     
@@ -28,9 +29,10 @@ struct LibraryWordDetailsView: View {
                     } label: {
                         Image(systemName: "trash")
                             .padding()
-                            .glassEffect(.regular.interactive())
                         
                     }
+                    .buttonStyle(.plain)
+                    .glassEffect(.regular.interactive())
                 }
                 
                 TextField("", text: $word)
