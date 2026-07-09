@@ -24,10 +24,12 @@ struct RootView: View {
     
     @State private var page: Page = .chat
     
+    @State private var dataModel = DataModel()
+    
     
     var body: some View {
         TabView(selection: $page) {
-            ChatsView()
+            LibraryView()
                 .tag(Page.chats)
             ChatView()
                 .tag(Page.chat)
@@ -38,6 +40,7 @@ struct RootView: View {
         .safeAreaInset(edge: .top) {
             RootViewTitleView(page: $page)
         }
+        .environment(dataModel)
     }
     
     
