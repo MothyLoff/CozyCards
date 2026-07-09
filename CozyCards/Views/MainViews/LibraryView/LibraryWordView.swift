@@ -16,12 +16,12 @@ struct LibraryWordView: View {
                 .foregroundStyle(.primary)
                 .font(.headline)
                 .padding()
-//                .background {
-//                    RoundedRectangle(cornerRadius: 32)
-//                        .foregroundStyle(.background.secondary)
-//                }
+                .background {
+                    RoundedRectangle(cornerRadius: 32)
+                        .foregroundStyle(.background.secondary)
+                }
         }
-        .glassEffect(.regular.interactive())
+//        .glassEffect(.regular.interactive())
         .sheet(isPresented: $detailsPresented) {
             LibraryWordDetailsView(word: word, description: "lololo")
                 .presentationDetents([.fraction(0.4)])
