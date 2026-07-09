@@ -3,6 +3,9 @@ import SwiftUI
 
 
 struct ChatView: View {
+    
+    @Environment(DataModel.self) private var dataModel
+    
     @State private var chatViewModel = ChatViewModel()
     @State private var prompt: String = ""
     
