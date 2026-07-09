@@ -14,7 +14,7 @@ struct CozyCardsApp: App {
             RootView()
                 .environment(libraryStore)
         }
-        .modelContainer(for: [ChatSession.self, WordDictionary.self, WordCard.self])
+        .modelContainer(for: [Chat.self, WordDictionary.self, WordCard.self])
     }
 
 
