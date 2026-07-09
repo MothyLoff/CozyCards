@@ -1,0 +1,15 @@
+// Шаблон локальной подписи.
+// Скопируй в Local.xcconfig и подставь свои значения:
+//
+//     cp Local.xcconfig.example Local.xcconfig
+//
+// Local.xcconfig игнорируется git-ом, поэтому у каждого своя подпись
+// и вы больше не перезаписываете друг другу project.pbxproj.
+//
+// DEVELOPMENT_TEAM: Xcode -> Settings -> Accounts -> твоя команда -> Team ID.
+// PRODUCT_BUNDLE_IDENTIFIER: должен быть уникальным. На бесплатном Personal Team
+// один и тот же identifier нельзя зарегистрировать двум разным командам,
+// поэтому у каждого свой префикс.
+
+DEVELOPMENT_TEAM = YOUR_TEAM_ID
+PRODUCT_BUNDLE_IDENTIFIER = yourprefix.CozyCards
