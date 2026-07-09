@@ -8,6 +8,6 @@ struct CozyCardsApp: App {
         WindowGroup {
             RootView()
         }
-        .modelContainer(for: [Chat.self, WordDictionary.self, WordCard.self])
+        .modelContainer(for: [ChatSession.self, WordDictionary.self, WordCard.self])
     }
 }
