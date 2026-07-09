@@ -75,8 +75,10 @@ struct ChatView: View {
                             .glassEffect(.regular.interactive())
                             .glassEffectID("send", in: namespace)
                         }
+                        
                     }
                 }
+                .animation(.spring(duration: 0.2), value: prompt.isEmpty)
             }
         }
         .padding(.horizontal, 32)
@@ -87,10 +89,10 @@ struct ChatView: View {
 }
 
 
+
 //#Preview {
 //    
 //    ChatView()
 //        .preferredColorScheme(.dark)
 //    
 //}
-
