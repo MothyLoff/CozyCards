@@ -64,7 +64,6 @@ struct HistoryView: View {
                             .padding()
                             
                     }
-                    .buttonStyle(.plain)
                     .glassEffect(.regular.interactive())
                     .glassEffectID("new", in: footerNamespace)
                     

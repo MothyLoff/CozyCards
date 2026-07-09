@@ -3,6 +3,8 @@ import SwiftUI
 
 
 struct ChatView: View {
+    @Binding var page : Page
+    
     @State private var chatViewModel = ChatViewModel()
     @State private var prompt: String = ""
     
@@ -19,6 +21,34 @@ struct ChatView: View {
             }
             .defaultScrollAnchor(.bottom)
             .scrollIndicators(.hidden)
+            
+            .safeAreaInset(edge: .top) {
+                HStack {
+                    Button {
+                        withAnimation(.spring(duration: 0.2)) {
+                            page = .history
+                        }
+                        
+                    } label: {
+                        Image(systemName: "line.horizontal.3.decrease")
+                            .padding()
+                    }
+                    .glassEffect(.regular.interactive())
+                    
+                    Spacer()
+                    
+                    Button {
+                        withAnimation(.spring(duration: 0.2)) {
+                            page = .library
+                        }
+                    } label: {
+                        Image(systemName: "book")
+                            .padding()
+                    }
+                    .glassEffect(.regular.interactive())
+                }
+            }
+            
             .safeAreaInset(edge: .bottom) {
                 GlassEffectContainer {
                     HStack {
@@ -41,9 +71,9 @@ struct ChatView: View {
                             } label: {
                                 Image(systemName: "arrow.turn.right.up")
                                     .padding()
-                                    .glassEffect(.regular.interactive())
-                                    .glassEffectID("send", in: namespace)
                             }
+                            .glassEffect(.regular.interactive())
+                            .glassEffectID("send", in: namespace)
                         }
                     }
                 }
@@ -56,10 +86,11 @@ struct ChatView: View {
     
 }
 
-#Preview {
-    
-    ChatView()
-        .preferredColorScheme(.dark)
-    
-}
+
+//#Preview {
+//    
+//    ChatView()
+//        .preferredColorScheme(.dark)
+//    
+//}
 

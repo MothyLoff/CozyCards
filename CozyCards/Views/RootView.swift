@@ -25,7 +25,7 @@ struct RootView: View {
         TabView(selection: $page) {
             HistoryView(page: $page)
                 .tag(Page.history)
-            ChatView()
+            ChatView(page: $page)
                 .tag(Page.chat)
             LibraryView()
                 .tag(Page.library)
