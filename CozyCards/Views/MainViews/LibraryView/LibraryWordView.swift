@@ -13,7 +13,6 @@ struct LibraryWordView: View {
             detailsPresented = true
         } label: {
             Text(word)
-                .foregroundStyle(.primary)
                 .font(.headline)
                 .padding()
                 .background {
@@ -21,6 +20,7 @@ struct LibraryWordView: View {
                         .foregroundStyle(.background.secondary)
                 }
         }
+        .buttonStyle(.plain)
 //        .glassEffect(.regular.interactive())
         .sheet(isPresented: $detailsPresented) {
             LibraryWordDetailsView(word: word, description: "lololo")
