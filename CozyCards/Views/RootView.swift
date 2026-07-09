@@ -9,8 +9,12 @@ import SwiftUI
 
 
 
-enum Page: String {
+enum Page: String, CaseIterable {
+
+
     case history, chat, library
+
+
 }
 
 
@@ -19,24 +23,56 @@ struct RootView: View {
 
 
     @State private var page: Page = .chat
+    @State private var position: Page? = .chat
+    @State private var progress: CGFloat = 1
 
     @State private var dataModel = DataModel()
 
+    private let pages = Page.allCases
+
 
     var body: some View {
-        TabView(selection: $page) {
-            HistoryView(page: $page)
-                .tag(Page.history)
-            ChatView(page: $page)
-                .tag(Page.chat)
-            LibraryView()
-                .tag(Page.library)
+        ScrollView(.horizontal) {
+            HStack(spacing: 0) {
+                ForEach(pages, id: \.self) { item in
+                    view(for: item)
+                        .containerRelativeFrame(.horizontal)
+                        .id(item)
+                }
+            }
+            .scrollTargetLayout()
         }
-        .tabViewStyle(.page(indexDisplayMode: .never))
+        .scrollTargetBehavior(.paging)
+        .scrollPosition(id: $position)
+        .scrollIndicators(.hidden)
+        .onScrollGeometryChange(for: CGFloat.self) { geometry in
+            let width = geometry.containerSize.width
+            return width > 0 ? geometry.contentOffset.x / width : progress
+        } action: { _, newValue in
+            progress = newValue
+        }
+        .onChange(of: position) { _, newValue in
+            if let newValue, newValue != page { page = newValue }
+        }
+        .onChange(of: page) { _, newValue in
+            if position != newValue {
+                withAnimation(.spring(duration: 0.25)) { position = newValue }
+            }
+        }
         .safeAreaInset(edge: .top) {
-            RootViewTitleView(page: $page)
+            RootViewTitleView(page: $page, progress: progress)
         }
         .environment(dataModel)
+    }
+
+
+    @ViewBuilder
+    private func view(for item: Page) -> some View {
+        switch item {
+        case .history: HistoryView(page: $page)
+        case .chat: ChatView(page: $page)
+        case .library: LibraryView()
+        }
     }
 
 
