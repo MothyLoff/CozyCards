@@ -23,7 +23,7 @@ struct RootView: View {
     
     var body: some View {
         TabView(selection: $page) {
-            HistoryView()
+            HistoryView(page: $page)
                 .tag(Page.history)
             ChatView()
                 .tag(Page.chat)
