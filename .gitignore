@@ -37,12 +37,11 @@ fastlane/test_output
 .DS_Store
 
 # Environment / secrets
+# Local.xcconfig держит подпись каждого разработчика (DEVELOPMENT_TEAM,
+# PRODUCT_BUNDLE_IDENTIFIER) и намеренно не коммитится.
 *.xcconfig
 .env
 
 # Playgrounds
 timeline.xctimeline
 playground.xcworkspace
-
-CozyCards.xcodeproj/project.xcworkspace/xcuserdata/mac.xcuserdatad/UserInterfaceState.xcuserstate
-CozyCards.xcodeproj/project.xcworkspace/xcuserdata/mac.xcuserdatad/UserInterfaceState.xcuserstate
