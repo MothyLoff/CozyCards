@@ -71,7 +71,7 @@ struct RootView: View {
         switch item {
         case .history: HistoryView(page: $page)
         case .chat: ChatView(page: $page)
-        case .library: LibraryView()
+        case .library: LibraryView_()
         }
     }
 

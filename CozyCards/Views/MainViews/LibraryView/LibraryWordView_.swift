@@ -2,17 +2,17 @@ import SwiftUI
 
 
 
-struct LibraryWordView: View {
+struct LibraryWordView_: View {
+
     @State private var detailsPresented = false
-    
-    var word: String
-    var description: String = ""
-    
+
+    var item: LibraryItem
+
     var body: some View {
         Button {
             detailsPresented = true
         } label: {
-            Text(word)
+            Text(item.card.primaryText)
                 .font(.headline)
                 .padding()
                 .background {
@@ -21,17 +21,27 @@ struct LibraryWordView: View {
                 }
         }
         .buttonStyle(.plain)
-//        .glassEffect(.regular.interactive())
         .sheet(isPresented: $detailsPresented) {
-            LibraryWordDetailsView(word: word, description: "lololo")
+            LibraryWordDetailsView_(mode: .edit(item))
                 .presentationDetents([.fraction(0.4)])
         }
-
     }
+
+
 }
 
 
 #Preview {
-    LibraryWordView(word: "word!!")
-        .preferredColorScheme(.dark)
+
+    LibraryWordView_(item: LibraryItem(card: .word(WordCardContent(
+        term: "word!!",
+        partOfSpeech: nil,
+        transcription: nil,
+        definition: "lololo",
+        translation: nil,
+        examples: []
+    ))))
+    .environment(LibraryStore(repository: InMemoryLibraryRepository()))
+    .preferredColorScheme(.dark)
+
 }

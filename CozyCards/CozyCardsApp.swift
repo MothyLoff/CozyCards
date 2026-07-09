@@ -6,7 +6,21 @@ import SwiftData
 struct CozyCardsApp: App {
 
 
-    @State private var libraryStore = LibraryStore(repository: InMemoryLibraryRepository())
+    private let modelContainer: ModelContainer
+    @State private var libraryStore: LibraryStore
+
+
+    init() {
+        let container: ModelContainer
+        do {
+            container = try ModelContainer(for: LibraryItemModel_.self, LibraryDictionaryModel_.self)
+        } catch {
+            fatalError("Failed to create ModelContainer for LibraryItemModel_: \(error)")
+        }
+
+        modelContainer = container
+        libraryStore = LibraryStore(repository: SwiftDataLibraryRepository_(modelContainer: container))
+    }
 
 
     var body: some Scene {
@@ -14,7 +28,7 @@ struct CozyCardsApp: App {
             RootView()
                 .environment(libraryStore)
         }
-        .modelContainer(for: [Chat.self, WordDictionary.self, WordCard.self])
+        .modelContainer(modelContainer)
     }
 
 

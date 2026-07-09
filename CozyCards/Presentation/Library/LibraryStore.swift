@@ -52,6 +52,11 @@ final class LibraryStore {
         Task { await repository.update(item) }
     }
 
+    /// Persists a full replacement of an existing item (used by the edit form).
+    func updateItem(_ item: LibraryItem) {
+        Task { await repository.update(item) }
+    }
+
 
     private func observe() {
         Task { [weak self] in
