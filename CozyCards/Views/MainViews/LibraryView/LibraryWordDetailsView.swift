@@ -40,7 +40,12 @@ struct LibraryWordDetailsView: View {
                     .font(.largeTitle)
                     .bold()
                     .padding()
-                    .glassEffect(.regular.interactive())
+//                    .glassEffect(.regular.interactive())
+                    .background {
+                        RoundedRectangle(cornerRadius: 32)
+                            .foregroundStyle(.background.secondary)
+                    }
+
                     .padding(.bottom, 32)
                 
                 
