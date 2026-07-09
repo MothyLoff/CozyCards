@@ -10,7 +10,7 @@ import SwiftUI
 
 
 enum Page: String {
-    case chat, chats, library
+    case history, chat, library
 }
 
 
@@ -23,8 +23,8 @@ struct RootView: View {
     
     var body: some View {
         TabView(selection: $page) {
-            ChatsView()
-                .tag(Page.chats)
+            HistoryView()
+                .tag(Page.history)
             ChatView()
                 .tag(Page.chat)
             LibraryView()
