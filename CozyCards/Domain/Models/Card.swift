@@ -12,15 +12,15 @@ import FoundationModels
 enum Card: Hashable, Sendable {
 
 
-    case word(WordCard)
+    case word(WordCardContent)
 
-    case phrase(PhraseCard)
+    case phrase(PhraseCardContent)
 
-    case collocation(CollocationCard)
+    case collocation(CollocationCardContent)
 
-    case idiom(IdiomCard)
+    case idiom(IdiomCardContent)
 
-    case rule(RuleCard)
+    case rule(RuleCardContent)
 
 
 }
@@ -28,7 +28,7 @@ enum Card: Hashable, Sendable {
 
 
 @Generable
-struct WordCard: Hashable, Sendable {
+struct WordCardContent: Hashable, Sendable {
 
 
     @Guide(description: "The word or term, in the language being learned")
@@ -55,7 +55,7 @@ struct WordCard: Hashable, Sendable {
 
 
 @Generable
-struct PhraseCard: Hashable, Sendable {
+struct PhraseCardContent: Hashable, Sendable {
 
 
     @Guide(description: "The phrase, as it is actually used")
@@ -76,7 +76,7 @@ struct PhraseCard: Hashable, Sendable {
 
 
 @Generable
-struct CollocationCard: Hashable, Sendable {
+struct CollocationCardContent: Hashable, Sendable {
 
 
     @Guide(description: "The collocation pattern, for example 'make a decision' or 'heavy rain'")
@@ -97,7 +97,7 @@ struct CollocationCard: Hashable, Sendable {
 
 
 @Generable
-struct IdiomCard: Hashable, Sendable {
+struct IdiomCardContent: Hashable, Sendable {
 
 
     @Guide(description: "The idiom")
@@ -121,7 +121,7 @@ struct IdiomCard: Hashable, Sendable {
 
 
 @Generable
-struct RuleCard: Hashable, Sendable {
+struct RuleCardContent: Hashable, Sendable {
 
 
     @Guide(description: "A short name for the rule")

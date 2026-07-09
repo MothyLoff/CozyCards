@@ -10,28 +10,24 @@ import SwiftUI
 
 
 enum Page: String {
-    
-    
-    case chat, chats, library
-    
-    
+    case history, chat, library
 }
 
 
 
 struct RootView: View {
-    
-    
+
+
     @State private var page: Page = .chat
-    
+
     @State private var dataModel = DataModel()
-    
-    
+
+
     var body: some View {
         TabView(selection: $page) {
-            LibraryView()
-                .tag(Page.chats)
-            ChatView()
+            HistoryView(page: $page)
+                .tag(Page.history)
+            ChatView(page: $page)
                 .tag(Page.chat)
             LibraryView()
                 .tag(Page.library)
@@ -42,16 +38,16 @@ struct RootView: View {
         }
         .environment(dataModel)
     }
-    
-    
+
+
 }
 
 
 
 #Preview {
-    
-    
+
+
     RootView()
-    
-    
+
+
 }

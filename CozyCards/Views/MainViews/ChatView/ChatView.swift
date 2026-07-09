@@ -3,14 +3,13 @@ import SwiftUI
 
 
 struct ChatView: View {
-    
-    @Environment(DataModel.self) private var dataModel
-    
+    @Binding var page : Page
+
     @State private var chatViewModel = ChatViewModel()
     @State private var prompt: String = ""
-    
+
     @Namespace private var namespace
-    
+
     var body: some View {
         VStack {
             ScrollView {
@@ -22,6 +21,34 @@ struct ChatView: View {
             }
             .defaultScrollAnchor(.bottom)
             .scrollIndicators(.hidden)
+
+            .safeAreaInset(edge: .top) {
+                HStack {
+                    Button {
+                        withAnimation(.spring(duration: 0.2)) {
+                            page = .history
+                        }
+
+                    } label: {
+                        Image(systemName: "line.horizontal.3.decrease")
+                            .padding()
+                    }
+                    .glassEffect(.regular.interactive())
+
+                    Spacer()
+
+                    Button {
+                        withAnimation(.spring(duration: 0.2)) {
+                            page = .library
+                        }
+                    } label: {
+                        Image(systemName: "book")
+                            .padding()
+                    }
+                    .glassEffect(.regular.interactive())
+                }
+            }
+
             .safeAreaInset(edge: .bottom) {
                 GlassEffectContainer {
                     HStack {
@@ -30,13 +57,13 @@ struct ChatView: View {
                             .padding()
                             .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 32))
                             .glassEffectID("input", in: namespace)
-                        
+
                         if !prompt.isEmpty {
                             Button {
                                 Task {
                                     let tmpPrompt = prompt
                                     prompt = ""
-                                    
+
                                     if tmpPrompt != "" {
                                         await chatViewModel.newMessage(prompt: tmpPrompt)
                                     }
@@ -44,25 +71,28 @@ struct ChatView: View {
                             } label: {
                                 Image(systemName: "arrow.turn.right.up")
                                     .padding()
-                                    .glassEffect(.regular.interactive())
-                                    .glassEffectID("send", in: namespace)
                             }
+                            .glassEffect(.regular.interactive())
+                            .glassEffectID("send", in: namespace)
                         }
+
                     }
                 }
+                .animation(.spring(duration: 0.2), value: prompt.isEmpty)
             }
         }
         .padding(.horizontal, 32)
 
     }
-    
-    
+
+
 }
 
-#Preview {
-    
-    ChatView()
-        .preferredColorScheme(.dark)
-    
-}
 
+
+//#Preview {
+//
+//    ChatView()
+//        .preferredColorScheme(.dark)
+//
+//}

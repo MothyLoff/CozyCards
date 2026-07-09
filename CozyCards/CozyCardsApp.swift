@@ -1,5 +1,5 @@
 import SwiftUI
-
+import SwiftData
 
 
 @main
@@ -14,6 +14,7 @@ struct CozyCardsApp: App {
             RootView()
                 .environment(libraryStore)
         }
+        .modelContainer(for: [Chat.self, WordDictionary.self, WordCard.self])
     }
 
 
