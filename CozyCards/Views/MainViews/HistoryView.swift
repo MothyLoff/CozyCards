@@ -2,13 +2,13 @@ import SwiftUI
 
 
 
-struct ChatsView: View {
+struct HistoryView: View {
     
     
     var body: some View {
         Color.blue
             .overlay {
-                Text("ChatsView")
+                Text("HistoryView")
             }
     }
     
