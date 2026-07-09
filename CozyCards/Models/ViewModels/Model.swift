@@ -50,10 +50,8 @@ final class WordDictionary {
     }
 }
 
-// Переименовано из `Chat` в `ChatSession`, чтобы не конфликтовать
-// с моковым `struct Chat` в HistoryView.swift
 @Model
-final class ChatSession {
+final class Chat {
     var id: UUID
     var title: String
     var createdAt: Date
