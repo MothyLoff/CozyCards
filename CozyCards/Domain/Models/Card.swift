@@ -8,8 +8,13 @@ import FoundationModels
 /// carries the fields that make sense for that kind. Switch over the case to
 /// render or store it. The model fills only the fields that are relevant and
 /// leaves the rest `nil`, so treat every optional as "may be absent".
+///
+/// `Codable` is not decoration. The storage layer persists a card whole, as a
+/// `.codable` attribute, instead of flattening it into columns, so the encoding
+/// of this type is a storage contract: renaming a case or a field breaks
+/// decoding of rows already on disk.
 @Generable
-enum Card: Hashable, Sendable {
+enum Card: Codable, Hashable, Sendable {
 
 
     case word(WordCardContent)
@@ -28,7 +33,7 @@ enum Card: Hashable, Sendable {
 
 
 @Generable
-struct WordCardContent: Hashable, Sendable {
+struct WordCardContent: Codable, Hashable, Sendable {
 
 
     @Guide(description: "The word or term, in the language being learned")
@@ -55,7 +60,7 @@ struct WordCardContent: Hashable, Sendable {
 
 
 @Generable
-struct PhraseCardContent: Hashable, Sendable {
+struct PhraseCardContent: Codable, Hashable, Sendable {
 
 
     @Guide(description: "The phrase, as it is actually used")
@@ -76,7 +81,7 @@ struct PhraseCardContent: Hashable, Sendable {
 
 
 @Generable
-struct CollocationCardContent: Hashable, Sendable {
+struct CollocationCardContent: Codable, Hashable, Sendable {
 
 
     @Guide(description: "The collocation pattern, for example 'make a decision' or 'heavy rain'")
@@ -97,7 +102,7 @@ struct CollocationCardContent: Hashable, Sendable {
 
 
 @Generable
-struct IdiomCardContent: Hashable, Sendable {
+struct IdiomCardContent: Codable, Hashable, Sendable {
 
 
     @Guide(description: "The idiom")
@@ -121,7 +126,7 @@ struct IdiomCardContent: Hashable, Sendable {
 
 
 @Generable
-struct RuleCardContent: Hashable, Sendable {
+struct RuleCardContent: Codable, Hashable, Sendable {
 
 
     @Guide(description: "A short name for the rule")
