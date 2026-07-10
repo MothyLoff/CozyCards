@@ -1,14 +1,16 @@
 import Foundation
 import Observation
-import FoundationModels
 
 
 
-/// One turn in a chat: the user's prompt and the model's streaming answer.
+/// One turn in a chat: the user's prompt, the model's free-text reply, and any
+/// cards the model produced along the way.
 ///
-/// `answer` updates live while `state` is `.streaming`. For a card answer the
-/// payload is fully populated once `state` becomes `.completed`. UI observes
-/// this object directly; there is no need to diff snapshots by hand.
+/// Both `text` and `cards` fill in live while `state` is `.streaming`. A turn
+/// can hold text and no cards, cards and no text, or both: the model decides.
+/// Each card carries its own lifecycle, so observe the drafts, not this state,
+/// to know whether a card is done. UI observes this object directly; there is
+/// no need to diff snapshots by hand.
 @Observable
 final class ChatMessage: Identifiable {
 
@@ -17,7 +19,9 @@ final class ChatMessage: Identifiable {
 
     let prompt: String
 
-    var answer: Answer
+    var text: String
+
+    var cards: [CardDraft]
 
     var state: State
 
@@ -25,32 +29,21 @@ final class ChatMessage: Identifiable {
     init(
         id: UUID = UUID(),
         prompt: String,
-        answer: Answer = .none,
+        text: String = "",
+        cards: [CardDraft] = [],
         state: State = .streaming
     ) {
         self.id = id
         self.prompt = prompt
-        self.answer = answer
+        self.text = text
+        self.cards = cards
         self.state = state
     }
 
 
-    /// What the model is replying with. A message is either a structured card
-    /// or free text, decided as generation starts.
-    enum Answer {
-
-
-        case none
-
-        case text(String)
-
-        case card(Card.PartiallyGenerated)
-
-
-    }
-
-
-    /// Where the reply is in its lifecycle. `.failed` carries a user-facing reason.
+    /// Where the reply is in its lifecycle. `.failed` carries a user-facing
+    /// reason - a guardrail violation, an exhausted context window, a model
+    /// that turned out to be unavailable.
     enum State: Equatable {
 
 
