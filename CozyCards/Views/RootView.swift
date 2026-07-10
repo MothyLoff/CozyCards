@@ -83,15 +83,20 @@ struct RootView: View {
 
     let container = try! ModelContainer(
         for: LibraryItemModel.self,
-        LibraryDictionaryModel.self,
         ChatThreadModel.self,
         ChatMessageModel.self,
         configurations: ModelConfiguration(isStoredInMemoryOnly: true)
     )
 
+    let library = SwiftDataLibraryRepository(modelContainer: container)
+
     RootView()
-        .environment(LibraryStore(repository: SwiftDataLibraryRepository(modelContainer: container)))
-        .environment(ChatStore(repository: SwiftDataChatRepository(modelContainer: container)))
+        .environment(LibraryStore(repository: library))
+        .environment(ChatStore(
+            repository: SwiftDataChatRepository(modelContainer: container),
+            library: library,
+            language: MockLanguageModel()
+        ))
         .modelContainer(container)
 
 

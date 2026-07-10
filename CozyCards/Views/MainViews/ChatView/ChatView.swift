@@ -28,6 +28,14 @@ struct ChatView: View {
             .onTapGesture {
                 isInputFocused = false
             }
+            .overlay {
+                if chatStore.availability != .available {
+                    ModelUnavailableView(availability: chatStore.availability)
+                }
+            }
+            // Loads model resources before the first prompt, cutting the wait
+            // for the first token. Cheap and idempotent.
+            .onAppear { chatStore.prewarm() }
 
             .safeAreaInset(edge: .top) {
                 HStack {
@@ -87,6 +95,9 @@ struct ChatView: View {
                     }
                 }
                 .animation(.spring(duration: 0.2), value: prompt.isEmpty)
+                // There is no cloud fallback: without the model there is
+                // nothing for the input to do.
+                .disabled(chatStore.availability != .available)
             }
         }
         .padding(.horizontal, 32)

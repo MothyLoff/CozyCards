@@ -16,7 +16,6 @@ struct CozyCardsApp: App {
         do {
             container = try ModelContainer(
                 for: LibraryItemModel.self,
-                LibraryDictionaryModel.self,
                 ChatThreadModel.self,
                 ChatMessageModel.self
             )
@@ -25,8 +24,19 @@ struct CozyCardsApp: App {
         }
 
         modelContainer = container
-        libraryStore = LibraryStore(repository: SwiftDataLibraryRepository(modelContainer: container))
-        chatStore = ChatStore(repository: SwiftDataChatRepository(modelContainer: container))
+
+        // One library repository, two owners: the library screen reads it, chat
+        // writes into it when the model produces a card. Two instances would
+        // each keep their own `observe()` subscribers, and the library screen
+        // would not notice a card arriving from chat.
+        let library = SwiftDataLibraryRepository(modelContainer: container)
+
+        libraryStore = LibraryStore(repository: library)
+        chatStore = ChatStore(
+            repository: SwiftDataChatRepository(modelContainer: container),
+            library: library,
+            language: AppleFoundationLanguageModel()
+        )
     }
 
 

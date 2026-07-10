@@ -19,6 +19,10 @@ final class LibraryStore {
 
     var kinds: Set<CardKind> = []
 
+    /// Selected tag filters. Empty means "any tag", which is what a card saved
+    /// straight from chat has - it is tagless and must stay visible.
+    var tags: Set<String> = []
+
 
     private let repository: LibraryRepository
 
@@ -29,10 +33,23 @@ final class LibraryStore {
     }
 
 
-    /// Items after applying the current `query` and `kinds` filter.
+    /// Every tag in use, sorted, for the filter chips. Derived rather than
+    /// stored: tags are a view onto the items, not a separate collection, which
+    /// is the whole reason the dictionary entity is gone.
+    var allTags: [String] {
+        Set(items.flatMap(\.tags)).sorted()
+    }
+
+
+    /// Items after applying the current `query`, `kinds` and `tags` filters.
+    ///
+    /// Selected tags combine as AND: picking two chips asks for the cards that
+    /// carry both, the way people narrow a search rather than widen it.
     var filtered: [LibraryItem] {
         items.filter { item in
-            item.matches(query) && (kinds.isEmpty || kinds.contains(item.card.kind))
+            item.matches(query)
+                && (kinds.isEmpty || kinds.contains(item.card.kind))
+                && tags.isSubset(of: item.tags)
         }
     }
 

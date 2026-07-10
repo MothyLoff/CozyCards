@@ -51,7 +51,7 @@ struct WordCardContent: Codable, Hashable, Sendable {
     @Guide(description: "Translation into the user's native language, only when a definition is not enough")
     var translation: String?
 
-    @Guide(description: "One to three natural example sentences using the word")
+    @Guide(description: "Natural example sentences using the word", .minimumCount(1), .maximumCount(3))
     var examples: [String]
 
 
@@ -72,7 +72,7 @@ struct PhraseCardContent: Codable, Hashable, Sendable {
     @Guide(description: "Translation into the user's native language, only when the explanation is not enough")
     var translation: String?
 
-    @Guide(description: "One to three natural example sentences using the phrase")
+    @Guide(description: "Natural example sentences using the phrase", .minimumCount(1), .maximumCount(3))
     var examples: [String]
 
 
@@ -93,7 +93,7 @@ struct CollocationCardContent: Codable, Hashable, Sendable {
     @Guide(description: "Translation into the user's native language, only when the explanation is not enough")
     var translation: String?
 
-    @Guide(description: "One to three natural example sentences using the collocation")
+    @Guide(description: "Natural example sentences using the collocation", .minimumCount(1), .maximumCount(3))
     var examples: [String]
 
 
@@ -117,7 +117,7 @@ struct IdiomCardContent: Codable, Hashable, Sendable {
     @Guide(description: "Translation into the user's native language, only when the explanation is not enough")
     var translation: String?
 
-    @Guide(description: "One to three natural example sentences using the idiom")
+    @Guide(description: "Natural example sentences using the idiom", .minimumCount(1), .maximumCount(3))
     var examples: [String]
 
 
@@ -135,7 +135,7 @@ struct RuleCardContent: Codable, Hashable, Sendable {
     @Guide(description: "The rule stated clearly and concisely")
     var statement: String
 
-    @Guide(description: "Examples that illustrate the rule in action")
+    @Guide(description: "Examples that illustrate the rule in action", .minimumCount(1), .maximumCount(3))
     var examples: [String]
 
 
