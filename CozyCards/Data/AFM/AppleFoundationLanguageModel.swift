@@ -125,8 +125,21 @@ nonisolated final class AFMChatSession: ChatSessioning, @unchecked Sendable {
     /// Translates the framework's errors into the domain's. Everything the app
     /// reacts to differently gets its own case; the rest collapses into `.other`
     /// rather than being swallowed.
+    ///
+    /// A turn can fail in two places, and the framework reports them as two
+    /// unrelated types. Generation itself throws `GenerationError`. A failure
+    /// while the model is filling a tool's arguments - a tripped guardrail, a
+    /// schema the model could not satisfy - throws `ToolCallError`, which wraps
+    /// the real cause in `underlyingError`. Casting to `GenerationError` alone
+    /// misses every one of those and reports "something went wrong" for a
+    /// guardrail violation the app knows exactly how to describe.
     private static func failure(for error: Error) -> GenerationFailure {
         if error is CancellationError { return .cancelled }
+
+        if let toolCallError = error as? LanguageModelSession.ToolCallError {
+            logger.error("Tool \(toolCallError.tool.name, privacy: .public) failed")
+            return failure(for: toolCallError.underlyingError)
+        }
 
         switch error as? LanguageModelSession.GenerationError {
         case .guardrailViolation:
@@ -134,11 +147,10 @@ nonisolated final class AFMChatSession: ChatSessioning, @unchecked Sendable {
         case .exceededContextWindowSize:
             return .contextWindowExceeded
         default:
-            // `localizedDescription` on a `GenerationError` is a one-liner that
+            // `localizedDescription` on these errors is a one-liner that
             // routinely says nothing. The framework puts the useful part in
-            // `failureReason`, and everything else only shows up under `dump`.
-            // The UI still gets a sentence a person can read; the console gets
-            // the truth.
+            // `failureReason`. The UI still gets a sentence a person can read;
+            // the console gets the truth.
             logger.error("Generation failed: \(String(describing: error), privacy: .public)")
             if let generationError = error as? LanguageModelSession.GenerationError {
                 logger.error("Reason: \(generationError.failureReason ?? "none", privacy: .public)")

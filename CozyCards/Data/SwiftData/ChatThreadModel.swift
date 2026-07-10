@@ -24,11 +24,14 @@ final class ChatThreadModel {
     @Attribute(.externalStorage) var transcriptData: Data?
 
 
+    /// Carries the thread's messages with it. A thread is inserted on its first
+    /// turn, so leaving this empty lost that turn whole - prompt, prose and
+    /// cards - until a second turn arrived and `save(_:)` rewrote the row.
     init(thread: ChatThread) {
         id = thread.id
         title = thread.title
         createdAt = thread.createdAt
-        messages = []
+        messages = thread.messages.map { ChatMessageModel(message: $0) }
         transcriptData = nil
     }
 
