@@ -88,9 +88,8 @@ final class ChatStore {
     /// Sends `prompt` in the current thread, streaming the reply into a new
     /// `ChatMessage`, then persisting the thread and its updated transcript.
     ///
-    /// A card arrives already finished, so its draft is born `.completed`: the
-    /// model hands a card to the tool, and the tool only ever sees the whole
-    /// thing.
+    /// A card arrives already finished, so its draft is born saved: the model
+    /// hands a card to the tool, and the tool only ever sees the whole thing.
     func send(prompt: String) async {
         guard language.availability == .available else { return }
 
@@ -109,7 +108,7 @@ final class ChatStore {
                     message.text = text
 
                 case .card(let card):
-                    let draft = CardDraft(card: card, state: .completed)
+                    let draft = CardDraft(card: card)
                     message.cards.append(draft)
                     await save(draft, from: message)
                 }
@@ -154,10 +153,8 @@ final class ChatStore {
 
 
     private func save(_ draft: CardDraft, from message: ChatMessage) async {
-        guard let card = draft.card else { return }
-
         // Tags belong to the user; the model never invents them.
-        let item = LibraryItem(card: card, tags: [], sourceMessageID: message.id)
+        let item = LibraryItem(card: draft.card, tags: [], sourceMessageID: message.id)
         draft.libraryItemID = item.id
         await library.add(item)
     }

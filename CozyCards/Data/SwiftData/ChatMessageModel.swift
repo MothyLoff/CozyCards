@@ -60,10 +60,7 @@ final class ChatMessageModel {
             failureReason = reason
         }
 
-        // Only a finished card is worth a row. A draft that is still streaming
-        // or that failed has nothing to show on reopen, and writing it would
-        // resurrect a spinner that can never resolve.
-        let records = message.cards.compactMap(CardDraftRecord.init)
+        let records = message.cards.map(CardDraftRecord.init)
         cardsData = records.isEmpty ? nil : try? JSONEncoder().encode(records)
     }
 
@@ -104,10 +101,10 @@ final class ChatMessageModel {
 
 /// The storable part of a `CardDraft`.
 ///
-/// `CardDraft.State` is not `Codable` and should not become so - `.streaming`
-/// and `.failed` describe a turn in flight, not a thing on disk. What survives
-/// is the card, its link to the library, and whether the user took the save
-/// back. Everything else reconstitutes as `.completed`.
+/// `CardDraft.State` stays out of the storage format on purpose: it is two
+/// cases today, and a raw value written to disk would freeze them. What a row
+/// records is the card, its link to the library, and one flag for whether the
+/// user took the save back.
 private struct CardDraftRecord: Codable {
 
 
@@ -117,18 +114,9 @@ private struct CardDraftRecord: Codable {
     let isDiscarded: Bool
 
 
-    init?(_ draft: CardDraft) {
-        guard let card = draft.card else { return nil }
-
-        switch draft.state {
-        case .completed, .discarded:
-            break
-        case .streaming, .failed:
-            return nil
-        }
-
+    init(_ draft: CardDraft) {
         id = draft.id
-        self.card = card
+        card = draft.card
         libraryItemID = draft.libraryItemID
         isDiscarded = draft.state == .discarded
     }
@@ -139,7 +127,7 @@ private struct CardDraftRecord: Codable {
             id: id,
             card: card,
             libraryItemID: libraryItemID,
-            state: isDiscarded ? .discarded : .completed
+            state: isDiscarded ? .discarded : .saved
         )
     }
 

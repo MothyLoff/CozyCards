@@ -41,8 +41,7 @@ protocol LanguageModeling: Sendable {
 /// Text arrives as growing snapshots; cards arrive whole. A card cannot arrive
 /// any other way: a tool's arguments are delivered to the tool, never to the
 /// caller, and the framework does not surface partially generated arguments.
-/// That is why `CardDraft` is created already `.completed` and why
-/// `Card+Lift.swift` currently has no callers.
+/// That is why a `CardDraft` is born saved and has no streaming state.
 ///
 /// `nonisolated` is load-bearing. This target builds with
 /// `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`, which puts every unannotated

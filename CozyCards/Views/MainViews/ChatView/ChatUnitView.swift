@@ -72,25 +72,17 @@ private struct ChatCardView: View {
                 .foregroundStyle(.secondary)
                 .cardSurface()
 
-        case .failed(let reason):
-            Text(reason)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-                .cardSurface()
+        case .saved:
+            VStack(alignment: .trailing, spacing: 8) {
+                CardView(card: .constant(draft.card))
+                    .disabled(true)
 
-        case .streaming, .completed:
-            if let card = draft.card {
-                VStack(alignment: .trailing, spacing: 8) {
-                    CardView(card: .constant(card))
-                        .disabled(true)
-
-                    Button(action: onDiscard) {
-                        Label("Remove from library", systemImage: "arrow.uturn.backward")
-                    }
-                    .font(.footnote)
-                    .buttonStyle(.plain)
-                    .foregroundStyle(.secondary)
+                Button(action: onDiscard) {
+                    Label("Remove from library", systemImage: "arrow.uturn.backward")
                 }
+                .font(.footnote)
+                .buttonStyle(.plain)
+                .foregroundStyle(.secondary)
             }
         }
     }
@@ -115,7 +107,7 @@ private struct ChatCardView: View {
         text: "You will meet it in writing far more often than in speech.",
         state: .completed
     )
-    message.cards = [CardDraft(card: .word(.preview), libraryItemID: UUID(), state: .completed)]
+    message.cards = [CardDraft(card: .word(.preview), libraryItemID: UUID())]
 
     return ScrollView {
         ChatUnitView(message: message)

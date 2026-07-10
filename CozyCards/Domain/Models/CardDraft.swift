@@ -1,31 +1,28 @@
 import Foundation
 import Observation
-import FoundationModels
 
 
 
-/// A card the model is producing, or has produced, inside a chat turn.
+/// A card the model produced inside a chat turn.
 ///
 /// A draft has an identity of its own because its life does not match the life
-/// of the message it appeared in: it streams, it is saved to the library, and
-/// the user may then edit or discard it. One turn can hold several drafts.
+/// of the message it appeared in: it is saved to the library, and the user may
+/// then edit or discard it. One turn can hold several drafts.
 ///
-/// While `state` is `.streaming`, read `snapshot`; once it is `.completed`,
-/// `card` holds the finished value and `snapshot` stops changing. `card` is the
-/// only value that may reach the library - a snapshot has no guarantees.
+/// A draft never streams, and `card` is never absent. A card is the *arguments*
+/// of a tool call, and the framework hands a tool its arguments whole - it does
+/// not surface them half-generated. So by the time a draft exists its card is
+/// finished and already in the library, and `state` records only whether the
+/// user took that save back.
 @Observable
 final class CardDraft: Identifiable {
 
 
     let id: UUID
 
-    /// The latest incremental snapshot. Every field may still be absent.
-    var snapshot: Card.PartiallyGenerated?
+    let card: Card
 
-    /// The finished card. Non-`nil` exactly when generation completed.
-    var card: Card?
-
-    /// The library item this draft was saved as, once it has been saved.
+    /// The library item this draft was saved as. `nil` once discarded.
     var libraryItemID: UUID?
 
     var state: State
@@ -33,29 +30,23 @@ final class CardDraft: Identifiable {
 
     init(
         id: UUID = UUID(),
-        snapshot: Card.PartiallyGenerated? = nil,
-        card: Card? = nil,
+        card: Card,
         libraryItemID: UUID? = nil,
-        state: State = .streaming
+        state: State = .saved
     ) {
         self.id = id
-        self.snapshot = snapshot
         self.card = card
         self.libraryItemID = libraryItemID
         self.state = state
     }
 
 
-    /// Where the card is in its life. `.discarded` is the user undoing the
-    /// automatic save; the draft stays in the transcript, the library item does not.
+    /// `.discarded` is the user undoing the automatic save: the draft stays in
+    /// the transcript, the library item does not.
     enum State: Equatable {
 
 
-        case streaming
-
-        case completed
-
-        case failed(String)
+        case saved
 
         case discarded
 

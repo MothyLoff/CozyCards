@@ -6,11 +6,11 @@ import Observation
 /// One turn in a chat: the user's prompt, the model's free-text reply, and any
 /// cards the model produced along the way.
 ///
-/// Both `text` and `cards` fill in live while `state` is `.streaming`. A turn
-/// can hold text and no cards, cards and no text, or both: the model decides.
-/// Each card carries its own lifecycle, so observe the drafts, not this state,
-/// to know whether a card is done. UI observes this object directly; there is
-/// no need to diff snapshots by hand.
+/// Both `text` and `cards` fill in live while `state` is `.streaming`, though
+/// they fill differently: text grows a snapshot at a time, a card appears whole
+/// the moment the model finishes calling the tool. A turn can hold text and no
+/// cards, cards and no text, or both - the model decides. UI observes this
+/// object directly; there is no need to diff snapshots by hand.
 @Observable
 final class ChatMessage: Identifiable {
 
