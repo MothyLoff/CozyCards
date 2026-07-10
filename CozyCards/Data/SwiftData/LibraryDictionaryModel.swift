@@ -1,29 +1,8 @@
-import Foundation
-import SwiftData
-
-
-
-/// A named collection of words, e.g. "Complicated words" or "Phrasal verbs".
-///
-/// Membership is tracked the simple way: a `LibraryItem` belongs to a
-/// dictionary when one of its `tags` equals that dictionary's `name`. That
-/// keeps `LibraryItem` / `LibraryRepository` completely untouched — this
-/// model only adds the list of dictionary *names* the UI shows, it doesn't
-/// own the words themselves.
-@Model
-final class LibraryDictionaryModel {
-
-
-    @Attribute(.unique) var id: UUID
-    var name: String
-    var createdAt: Date
-
-
-    init(name: String, createdAt: Date = .now) {
-        self.id = UUID()
-        self.name = name
-        self.createdAt = createdAt
-    }
-
-
-}
+// DELETE THIS FILE (coordinate with Dinara — this is her Data/ file).
+//
+// The dictionary-as-entity concept is gone: the library is a flat list of cards
+// and tags are the only grouping. Removing this @Model also requires dropping
+// `LibraryDictionaryModel.self` from the `ModelContainer` schema in
+// `CozyCardsApp.swift` and from the `#Preview` container in `RootView.swift`
+// (exact diffs are in the handoff report). The file is emptied because the
+// sandbox cannot delete it; remove it from the working tree by hand.
