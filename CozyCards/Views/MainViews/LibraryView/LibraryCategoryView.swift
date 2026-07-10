@@ -46,7 +46,7 @@ struct LibraryCategoryView: View {
         .padding(.bottom, 24)
         .sheet(isPresented: $isAddingWord) {
             LibraryWordDetailsView(mode: .new(dictionaryName: dictionaryName))
-                .presentationDetents([.fraction(0.4)])
+                .presentationDetents([.fraction(0.4), .large])
         }
     }
 

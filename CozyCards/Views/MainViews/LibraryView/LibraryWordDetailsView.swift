@@ -61,7 +61,6 @@ struct LibraryWordDetailsView: View {
                         Image(systemName: "arrow.backward")
                             .padding()
                     }
-                    .buttonStyle(.plain)
                     .glassEffect(.regular.interactive())
 
                     Spacer()
@@ -74,7 +73,6 @@ struct LibraryWordDetailsView: View {
                             Image(systemName: "trash")
                                 .padding()
                         }
-                        .buttonStyle(.plain)
                         .glassEffect(.regular.interactive())
                     }
                 }
@@ -94,18 +92,20 @@ struct LibraryWordDetailsView: View {
 
                 TextField("Type description here..", text: $definition, axis: .vertical)
                     .lineLimit(1...10)
-
-                Button {
-                    save()
-                } label: {
-                    Text(isNew ? "Add to library" : "Save changes")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                }
-                .glassEffect(.regular.interactive())
-                .disabled(term.trimmingCharacters(in: .whitespaces).isEmpty)
-                .padding(.top, 24)
             }
+            .padding()
+        }
+        .safeAreaInset(edge: .bottom) {
+            Button {
+                save()
+            } label: {
+                Text(isNew ? "Add to library" : "Save changes")
+                    .frame(maxWidth: .infinity)
+                    .padding()
+            }
+            .glassEffect(.regular.interactive())
+            .disabled(term.trimmingCharacters(in: .whitespaces).isEmpty)
+            .padding(.top, 24)
             .padding()
         }
     }

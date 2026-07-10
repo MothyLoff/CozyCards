@@ -23,7 +23,7 @@ struct LibraryWordView: View {
         .buttonStyle(.plain)
         .sheet(isPresented: $detailsPresented) {
             LibraryWordDetailsView(mode: .edit(item))
-                .presentationDetents([.fraction(0.4)])
+                .presentationDetents([.fraction(0.4), .large])
         }
     }
 
