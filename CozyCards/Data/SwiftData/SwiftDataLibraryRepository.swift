@@ -5,16 +5,31 @@ import SwiftData
 
 /// Disk-backed `LibraryRepository`, built on SwiftData.
 ///
-/// `@ModelActor` gives this its own background `ModelContext` bound to the
-/// shared `ModelContainer`, so every method here is already actor-isolated.
-/// Every mutating method re-fetches and re-broadcasts a fresh snapshot right
-/// after saving, so `observe()` stays correct without depending on
-/// SwiftData's own change notifications.
-@ModelActor
-actor SwiftDataLibraryRepository: LibraryRepository {
+/// Conforms to `ModelActor` by hand rather than through the `@ModelActor`
+/// macro: the macro's generated initializer only initializes `modelExecutor`
+/// and `modelContainer`, and it does not expand for an actor that declares
+/// stored properties of its own - `subscribers`, here. Writing the expansion
+/// out is the documented workaround and costs four lines.
+///
+/// The actor owns its own `ModelContext`, bound to the shared container, so
+/// every method below is already actor-isolated. Every mutating method
+/// re-fetches and re-broadcasts a fresh snapshot right after saving, so
+/// `observe()` stays correct without depending on SwiftData's own change
+/// notifications.
+actor SwiftDataLibraryRepository: LibraryRepository, ModelActor {
 
+
+    nonisolated let modelContainer: ModelContainer
+    nonisolated let modelExecutor: any ModelExecutor
 
     private var subscribers: [UUID: AsyncStream<[LibraryItem]>.Continuation] = [:]
+
+
+    init(modelContainer: ModelContainer) {
+        let modelContext = ModelContext(modelContainer)
+        self.modelExecutor = DefaultSerialModelExecutor(modelContext: modelContext)
+        self.modelContainer = modelContainer
+    }
 
 
     func all() -> [LibraryItem] {
