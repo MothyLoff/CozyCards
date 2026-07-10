@@ -82,27 +82,47 @@ struct LibraryItemDetailsView: View {
     }
 
 
+    /// Floats over the scrolling card instead of sitting on a bar. `.bar` is a
+    /// material, and a material laid over a plain sheet background reads as a
+    /// second surface with a seam across it - which is exactly what it looked
+    /// like. Glass has no seam: it tints itself from whatever scrolls beneath.
+    ///
+    /// Both actions are icons in circles rather than a word and an icon, so the
+    /// destructive one can carry a red tint without shouting across the header.
     private var header: some View {
-        HStack {
-            Button("Cancel") {
-                dismiss()
-            }
-            .buttonStyle(.plain)
-
-            Spacer()
-
-            if !isNew {
-                Button(role: .destructive) {
-                    store.remove(id: itemID)
+        GlassEffectContainer(spacing: 16) {
+            HStack {
+                Button {
                     dismiss()
                 } label: {
-                    Image(systemName: "trash")
+                    Image(systemName: "xmark")
+                        .font(.headline)
+                        .frame(width: 22, height: 22)
+                        .padding(12)
                 }
                 .buttonStyle(.plain)
+                .glassEffect(.regular.interactive(), in: .circle)
+
+                Spacer()
+
+                if !isNew {
+                    Button(role: .destructive) {
+                        store.remove(id: itemID)
+                        dismiss()
+                    } label: {
+                        Image(systemName: "trash")
+                            .font(.headline)
+                            .foregroundStyle(.white)
+                            .frame(width: 22, height: 22)
+                            .padding(12)
+                    }
+                    .buttonStyle(.plain)
+                    .glassEffect(.regular.tint(.red).interactive(), in: .circle)
+                }
             }
         }
-        .padding()
-        .background(.bar)
+        .padding(.horizontal)
+        .padding(.bottom, 8)
     }
 
     /// New cards only: pick the kind before filling it in. Switching kind rebuilds
