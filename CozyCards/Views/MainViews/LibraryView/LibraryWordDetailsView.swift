@@ -79,7 +79,7 @@ struct LibraryWordDetailsView: View {
 
                 TextField("Word", text: $term)
                     .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: true, vertical: false)
+//                    .fixedSize(horizontal: true, vertical: false)
                     .lineLimit(1...2)
                     .font(.largeTitle)
                     .bold()
