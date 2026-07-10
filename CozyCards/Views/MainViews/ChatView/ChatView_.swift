@@ -7,6 +7,7 @@ struct ChatView_: View {
 
     @Environment(ChatStore_.self) private var chatStore
     @State private var prompt: String = ""
+    @FocusState private var isInputFocused: Bool
 
     @Namespace private var namespace
 
@@ -21,6 +22,12 @@ struct ChatView_: View {
             }
             .defaultScrollAnchor(.bottom)
             .scrollIndicators(.hidden)
+            // Swipe down on the message list to dismiss the keyboard,
+            // same as Messages/most chat apps.
+            .scrollDismissesKeyboard(.interactively)
+            .onTapGesture {
+                isInputFocused = false
+            }
 
             .safeAreaInset(edge: .top) {
                 HStack {
@@ -54,6 +61,7 @@ struct ChatView_: View {
                     HStack {
                         TextField("Ask about words..", text: $prompt, axis: .vertical)
                             .lineLimit(1...5)
+                            .focused($isInputFocused)
                             .padding()
                             .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 32))
                             .glassEffectID("input", in: namespace)

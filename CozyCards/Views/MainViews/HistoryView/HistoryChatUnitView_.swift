@@ -19,8 +19,14 @@ struct HistoryChatUnitView_: View {
                 await chatStore.open(thread)
             }
         } label: {
-            Text(displayTitle)
-                .lineLimit(1)
+            HStack {
+                Text(displayTitle)
+                    .lineLimit(1)
+                Spacer(minLength: 0)
+            }
+            // Without this, .plain buttons only respond to taps on the text
+            // itself — this makes the whole row tappable, not just the label.
+            .contentShape(Rectangle())
         }
         .padding(.horizontal)
         .buttonStyle(.plain)
