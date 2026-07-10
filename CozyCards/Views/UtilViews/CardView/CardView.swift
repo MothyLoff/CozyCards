@@ -1,14 +1,13 @@
-//
-//  CardView.swift
-//  CozyCards
-//
-//  Created by Тимофей Фролов on 09.07.2026.
-//
-
 import SwiftUI
 
 
 
+/// The full form of a card, dispatching on its kind.
+///
+/// Editability comes from the environment, not from a parameter: apply
+/// `.disabled(true)` while a card streams in chat and the fields render as text,
+/// hiding themselves until the model fills them. Drop the modifier in a sheet
+/// and the same fields become editable.
 struct CardView: View {
 
 
@@ -16,57 +15,62 @@ struct CardView: View {
 
 
     var body: some View {
-        switch card.kind {
-        case .word:
-            Text("word")
-        default:
-            Text("def")
+        switch card {
+        case .word(let content):
+            WordCardContentView(binding(content, Card.word))
+
+        case .phrase(let content):
+            PhraseCardContentView(binding(content, Card.phrase))
+
+        case .collocation(let content):
+            CollocationCardContentView(binding(content, Card.collocation))
+
+        case .idiom(let content):
+            IdiomCardContentView(binding(content, Card.idiom))
+
+        case .rule(let content):
+            RuleCardContentView(binding(content, Card.rule))
         }
+    }
+
+
+    /// Projects a binding to the payload of the case the card is currently in.
+    private func binding<Content>(
+        _ content: Content,
+        _ wrap: @escaping (Content) -> Card
+    ) -> Binding<Content> {
+        Binding(
+            get: { content },
+            set: { card = wrap($0) }
+        )
+    }
+
+
+}
+
+
+
+#Preview("Editable") {
+    ScrollView {
+        VStack(spacing: 16) {
+            CardView(card: .constant(.word(.preview)))
+            CardView(card: .constant(.idiom(.preview)))
+            CardView(card: .constant(.rule(.preview)))
+        }
+        .padding()
     }
 }
 
 
 
-#Preview {
+#Preview("Streaming") {
     ScrollView {
         VStack(spacing: 16) {
-            CardView(card: .constant(.word(WordCardContent(
-                term: "serendipity",
-                partOfSpeech: "noun",
-                transcription: "/ˌser.ənˈdɪp.ə.ti/",
-                definition: "the fact of finding pleasant things by chance",
-                translation: nil,
-                examples: ["They met by pure serendipity."]
-            ))))
-
-            CardView(card: .constant(.phrase(PhraseCardContent(
-                text: "on the same page",
-                meaning: "in agreement; sharing the same understanding",
-                translation: nil,
-                examples: ["Let's make sure we're on the same page."]
-            ))))
-
-            CardView(card: .constant(.collocation(CollocationCardContent(
-                pattern: "heavy rain",
-                meaning: "a large amount of rain",
-                translation: "сильный дождь",
-                examples: ["Heavy rain is expected this weekend."]
-            ))))
-
-            CardView(card: .constant(.idiom(IdiomCardContent(
-                text: "bite the bullet",
-                figurativeMeaning: "to force yourself to do something unpleasant",
-                literalMeaning: nil,
-                translation: nil,
-                examples: ["I finally bit the bullet and booked the dentist."]
-            ))))
-
-            CardView(card: .constant(.rule(RuleCardContent(
-                title: "A vs. an",
-                statement: "Use 'a' before a consonant sound and 'an' before a vowel sound.",
-                examples: ["a university", "an hour", "an apple"]
-            ))))
+            CardView(card: .constant(.word(.preview)))
+            CardView(card: .constant(.idiom(.preview)))
+            CardView(card: .constant(.rule(.preview)))
         }
         .padding()
     }
+    .disabled(true)
 }
