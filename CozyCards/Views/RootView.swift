@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 
 
@@ -25,8 +26,6 @@ struct RootView: View {
     @State private var page: Page = .chat
     @State private var position: Page? = .chat
     @State private var progress: CGFloat = 1
-
-    @State private var dataModel = DataModel()
 
     private let pages = Page.allCases
 
@@ -62,7 +61,6 @@ struct RootView: View {
         .safeAreaInset(edge: .top) {
             RootViewTitleView(page: $page, progress: progress)
         }
-        .environment(dataModel)
     }
 
 
@@ -83,7 +81,18 @@ struct RootView: View {
 #Preview {
 
 
+    let container = try! ModelContainer(
+        for: LibraryItemModel.self,
+        LibraryDictionaryModel.self,
+        ChatThreadModel.self,
+        ChatMessageModel.self,
+        configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
+
     RootView()
+        .environment(LibraryStore(repository: SwiftDataLibraryRepository(modelContainer: container)))
+        .environment(ChatStore(repository: SwiftDataChatRepository(modelContainer: container)))
+        .modelContainer(container)
 
 
 }

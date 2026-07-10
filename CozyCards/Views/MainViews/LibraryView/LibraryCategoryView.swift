@@ -2,44 +2,74 @@ import SwiftUI
 
 
 
+/// One dictionary rendered the way the original mockup rendered a category:
+/// a title followed by a horizontally scrolling row of words. The only
+/// addition is the small "+" next to the title, to add a word straight into
+/// this dictionary.
 struct LibraryCategoryView: View {
-    var category: String
-    var words: [String]
-    
+
+    var dictionaryName: String
+    var words: [LibraryItem]
+
+    @State private var isAddingWord = false
+
     var body: some View {
-        VStack (alignment: .leading) {
-            Text(category)
-                .font(.title)
-                .padding(.horizontal)
-            ScrollView (.horizontal) {
-                HStack {
-                    ForEach(words, id:\.self) { word in
-                        LibraryWordView(word: word)
-                    }
+        VStack(alignment: .leading) {
+            HStack {
+                Text(dictionaryName)
+                    .font(.title)
+                Spacer()
+                Button {
+                    isAddingWord = true
+                } label: {
+                    Image(systemName: "plus.circle")
                 }
             }
-            .scrollIndicators(.hidden)
+            .padding(.horizontal)
+
+            if words.isEmpty {
+                Text("No words yet")
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal)
+            } else {
+                ScrollView(.horizontal) {
+                    HStack {
+                        ForEach(words) { item in
+                            LibraryWordView(item: item)
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+                .scrollIndicators(.hidden)
+            }
         }
         .padding(.bottom, 24)
-        
+        .sheet(isPresented: $isAddingWord) {
+            LibraryWordDetailsView(mode: .new(dictionaryName: dictionaryName))
+                .presentationDetents([.fraction(0.4)])
+        }
     }
-    
-    
+
+
 }
 
 
 
 #Preview {
-    
-    LibraryCategoryView(category: "ComplicatedWords", words: [
-        "serendipity", "quintessential",
-        "epistemology", "incomprehensible",
-        "institutionalization", "counterintuitive",
-        "photosynthesis", "electroencephalograph",
-        "interdisciplinary", "misrepresentation",
-        "hyperresponsiveness", "cryptographically",
-        "uncharacteristically", "disproportionately",
 
-    ])
-    
+    LibraryCategoryView(
+        dictionaryName: "ComplicatedWords",
+        words: [
+            LibraryItem(card: .word(WordCardContent(
+                term: "serendipity", partOfSpeech: nil, transcription: nil,
+                definition: nil, translation: nil, examples: []
+            ))),
+            LibraryItem(card: .word(WordCardContent(
+                term: "quintessential", partOfSpeech: nil, transcription: nil,
+                definition: nil, translation: nil, examples: []
+            ))),
+        ]
+    )
+    .environment(LibraryStore(repository: InMemoryLibraryRepository()))
+
 }

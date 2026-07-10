@@ -3,10 +3,11 @@ import SwiftUI
 
 
 struct ChatView: View {
-    @Binding var page : Page
+    @Binding var page: Page
 
-    @State private var chatViewModel = ChatViewModel()
+    @Environment(ChatStore.self) private var chatStore
     @State private var prompt: String = ""
+    @FocusState private var isInputFocused: Bool
 
     @Namespace private var namespace
 
@@ -14,13 +15,19 @@ struct ChatView: View {
         VStack {
             ScrollView {
                 VStack {
-                    ForEach(chatViewModel.messages, id:\.self.id) { message in
-                        ChatUnitView(promptText: message.prompt, responseText: message.response)
+                    ForEach(chatStore.currentThread.messages) { message in
+                        ChatUnitView(message: message)
                     }
                 }
             }
             .defaultScrollAnchor(.bottom)
             .scrollIndicators(.hidden)
+            // Swipe down on the message list to dismiss the keyboard,
+            // same as Messages/most chat apps.
+            .scrollDismissesKeyboard(.interactively)
+            .onTapGesture {
+                isInputFocused = false
+            }
 
             .safeAreaInset(edge: .top) {
                 HStack {
@@ -54,6 +61,7 @@ struct ChatView: View {
                     HStack {
                         TextField("Ask about words..", text: $prompt, axis: .vertical)
                             .lineLimit(1...5)
+                            .focused($isInputFocused)
                             .padding()
                             .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 32))
                             .glassEffectID("input", in: namespace)
@@ -65,7 +73,7 @@ struct ChatView: View {
                                     prompt = ""
 
                                     if tmpPrompt != "" {
-                                        await chatViewModel.newMessage(prompt: tmpPrompt)
+                                        await chatStore.send(prompt: tmpPrompt)
                                     }
                                 }
                             } label: {
@@ -87,12 +95,3 @@ struct ChatView: View {
 
 
 }
-
-
-
-//#Preview {
-//
-//    ChatView()
-//        .preferredColorScheme(.dark)
-//
-//}
