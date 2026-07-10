@@ -69,8 +69,8 @@ struct RootView: View {
     @ViewBuilder
     private func view(for item: Page) -> some View {
         switch item {
-        case .history: HistoryView(page: $page)
-        case .chat: ChatView(page: $page)
+        case .history: HistoryView_(page: $page)
+        case .chat: ChatView_(page: $page)
         case .library: LibraryView_()
         }
     }
